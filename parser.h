@@ -23,6 +23,7 @@ struct serverent {
 struct netent {
    struct in_addr localip; /* Base IP of the network */
    struct in_addr localnet; /* Mask for the network */
+   int wildcard; /* Mark entry as wildcard entry */
    unsigned long startport; /* Range of ports for the */
    unsigned long endport;   /* network                */
 	struct netent *next; /* Pointer to next network entry */

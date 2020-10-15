@@ -575,19 +575,23 @@ int make_netent(char *value, struct netent **ent) {
    if (!endport)
       (*ent)->endport = 0;
          
+   if(ip[0]=='*'){
+      (*ent)->wildcard = 1;
+   }else{
 #ifdef HAVE_INET_ADDR
-   if (((*ent)->localip.s_addr = inet_addr(ip)) == -1) {
+      if (((*ent)->localip.s_addr = inet_addr(ip)) == -1) {
 #elif defined(HAVE_INET_ATON)
-   if (!(inet_aton(ip, &((*ent)->localip)))) {
+      if (!(inet_aton(ip, &((*ent)->localip)))) {
 #endif
-      /* Badly constructed IP */
-      free(*ent);
-      return(2);
+         /* Badly constructed IP */
+         free(*ent);
+         return(2);
+      }
    }
 #ifdef HAVE_INET_ADDR
-   else if (((*ent)->localnet.s_addr = inet_addr(subnet)) == -1) {
+   if (((*ent)->localnet.s_addr = inet_addr(subnet)) == -1) {
 #elif defined(HAVE_INET_ATON)
-   else if (!(inet_aton(subnet, &((*ent)->localnet)))) {
+   if (!(inet_aton(subnet, &((*ent)->localnet)))) {
 #endif
       /* Badly constructed subnet */
       free(*ent);
@@ -655,10 +659,9 @@ pick_server(struct parsedfile *config, struct serverent **ent,
          strcpy(ipbuf, inet_ntoa(net->localip));
          show_msg(MSGDEBUG, "Server can reach %s/%s\n", 
                   ipbuf, inet_ntoa(net->localnet));
-			if (((ip->s_addr & net->localnet.s_addr) ==
-              (net->localip.s_addr & net->localnet.s_addr)) &&
-             (!net->startport || 
-              ((net->startport <= port) && (net->endport >= port))))  
+			if ((((ip->s_addr & net->localnet.s_addr) == (net->localip.s_addr & net->localnet.s_addr)) &&
+                 (!net->startport || ((net->startport <= port) && (net->endport >= port)))) ||
+				 (net->wildcard && ((net->startport <= port) && (net->endport >= port))))  
          {
             show_msg(MSGDEBUG, "This server can reach target\n");
 				/* Found the net, return */
