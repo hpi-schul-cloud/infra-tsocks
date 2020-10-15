@@ -50,3 +50,12 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Autotools and executables
+Makefile
+config.cache
+config.h
+config.log
+inspectsocks
+saveme
+validateconf
