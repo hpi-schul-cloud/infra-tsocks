@@ -8,4 +8,6 @@ unsigned int resolve_ip(char *, int, int);
 #define MSGERR    0
 #define MSGWARN   1
 #define MSGNOTICE 2
-#define MSGDEBUG  2
+#define MSGDEBUG  3
+
+#define STRING(s) #s

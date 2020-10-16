@@ -153,9 +153,9 @@ static int get_environment() {
 #ifndef ALLOW_MSG_OUTPUT
    set_log_options(-1, stderr, 0);
 #else
-   if ((env = getenv("TSOCKS_DEBUG")))
+   if ((env = getenv("TSOCKS_LOG_LEVEL")))
       loglevel = atoi(env);
-   if (((env = getenv("TSOCKS_DEBUG_FILE"))) && !suid)
+   if (((env = getenv("TSOCKS_LOG_FILE"))) && !suid)
       logfile = env;
    set_log_options(loglevel, logfile, 1);
 #endif

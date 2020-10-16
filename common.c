@@ -80,6 +80,18 @@ set_log_options(int level, char *filename, int timestamp) {
    logstamp = timestamp;
 }
 
+char *__attribute__ ((visibility ("hidden")))
+get_log_level_string(int level) {
+   switch(level){
+      case MSGNONE: return ""; break;
+      case MSGERR: return "ERROR"; break;
+      case MSGWARN: return "WARN"; break;
+      case MSGNOTICE: return "NOTICE"; break;
+      case MSGDEBUG: return "DEBUG"; break;
+   }
+   return "";
+}
+
 void __attribute__ ((visibility ("hidden")))
 show_msg(int level, char *fmt, ...) {
 	va_list ap;
@@ -102,7 +114,7 @@ show_msg(int level, char *fmt, ...) {
       } else
          logfile = stderr;
    }
-
+   
    if (logstamp) {
       timestamp = time(NULL);
       strftime(timestring, sizeof(timestring),  "%H:%M:%S", 
@@ -115,6 +127,7 @@ show_msg(int level, char *fmt, ...) {
    if (logstamp) {
       fprintf(logfile, "(%d)", getpid());
    }
+   fprintf(logfile, " %s", get_log_level_string(level));
    
    fputs(": ", logfile);
 	
