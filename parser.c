@@ -596,9 +596,7 @@ int make_netent(char *value, struct netent **ent) {
       /* Badly constructed subnet */
       free(*ent);
       return(3);
-   } else if (((*ent)->localip.s_addr &
-          (*ent)->localnet.s_addr) != 
-                   (*ent)->localip.s_addr) {
+   } else if ((!(*ent)->wildcard) && (((*ent)->localip.s_addr & (*ent)->localnet.s_addr) != (*ent)->localip.s_addr)) {
       /* Subnet and Ip != Ip */
       free(*ent);
       return(4);
