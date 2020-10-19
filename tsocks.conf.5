@@ -118,13 +118,16 @@ local, otherwise tsocks would need a SOCKS server to reach SOCKS servers.
 .TP
 .I reaches
 This directive is only valid inside a path block. Its parameter is formed
-as IP[:startport[\-endport]]/Subnet and it specifies a network (and a range
+as IP[:startport[\-endport]]/Subnet  or *[:startport[\-endport]]/Subnet and 
+it specifies a network (and a range
 of ports on that network) that can be accessed by the SOCKS server specified
 in this path block. For example, in a path block "reaches =
 150.0.0.0:80\-1024/255.0.0.0" indicates to tsocks that the SOCKS server 
 specified in the current path block should be used to access any IPs in the 
 range 150.0.0.0 to 150.255.255.255 when the connection request is for ports
-80\-1024.
+80\-1024. For assigning a port or a port range to a specific server instead 
+of an IP, a wildcard '*' can be used. In this case the Subnet part is ignored.
+
 
 .TP
 .I fallback

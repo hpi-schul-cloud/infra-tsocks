@@ -58,10 +58,6 @@ This should result in the creation of the following:
 	- saveme - a statically linked utility to remove /etc/ld.so.preload
 		   if it becomes corrupt
 
-4. If you experience any errors at this step and don't know how to fix
-them, seek help using the contacts listed on
-http://tsocks.sourceforge.net/contact.php
-
 5. Install the compiled library. You can skip this step if you only plan
 to use the library for personal use. If you want all users on the machine
 to be able to use it however, su to root then type
@@ -107,15 +103,9 @@ sure the directory you put the library in is in the root of the
 filesystem, if the library is not available at boot time, again, your
 machine will be UNUSABLE. 
 
-9. Go ahead and use it! At this point everything should work. Again, if
-you experience any problems, use the contact points listed at
-http://tsocks.sourceforge.net/contact.php. If you do happen to break your
+9. If you do happen to break your
 machine with /etc/ld.so.preload, the build process creates a statically
 linked executable called saveme in the build directory. This executable
 simply unlinks /etc/ld.so.preload, this may or may not save you so give
 it a try. If it fails, you'll need to switch off the machine and get a
 rescue disk (e.g tomsrtbt) mount the disk and remove the file manually.
-
-Thats it, 
-
-Thanks, Shaun Clowes (delius@progsoc.org)
