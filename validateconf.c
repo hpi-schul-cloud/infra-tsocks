@@ -232,15 +232,18 @@ void show_server(struct parsedfile *config, struct serverent *server, int def) {
 		printf("This server can be used to reach:\n");
 		net = server->reachnets;
 		while (net != NULL) {
+		 if(!net->wildcard){
 			printf("Network: %15s ",
 			       inet_ntoa(net->localip));
 			printf("NetMask: %15s ", 
 			       inet_ntoa(net->localnet));
+		 }
          if (net->startport)
-            printf("Ports: %5lu - %5lu",
-                   net->startport, net->endport);
+            printf("Port(s): %5lu", net->startport);
+         if (net->endport > net->startport)
+            printf("- %5lu", net->endport);
          printf("\n");
-			net = net->next;
+		 net = net->next;
 		}
 	}
 }

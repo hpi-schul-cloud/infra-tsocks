@@ -5,8 +5,7 @@ prefix=@prefix@
 exec_prefix = @exec_prefix@
 libexecdir = @libexecdir@
 sysconfdir = @sysconfdir@
-# libdir = @libdir@
-libdir = /usr/lib
+libdir = @libdir@
 bindir = @bindir@
 infodir = @infodir@
 mandir = @mandir@
@@ -23,8 +22,10 @@ PARSER = parser
 VALIDATECONF = validateconf
 SCRIPT = tsocks
 SHLIB_MAJOR = 1
-SHLIB_MINOR = 8
-SHLIB = ${LIB_NAME}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}
+SHLIB_MINOR = 9
+SHLIB_PATCH = 0
+BASE_IMAGE = alpine
+SHLIB = ${LIB_NAME}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}.${SHLIB_PATCH}
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -82,6 +83,9 @@ installman:
 	${MKINSTALLDIRS} "${DESTDIR}${mandir}/man5"
 	${INSTALL_DATA} tsocks.conf.5 ${DESTDIR}${mandir}/man5/
 	
+dockerimage:
+	docker build --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg SHLIB=${SHLIB} .
+
 uninstall: uninstallscript uninstalllib uninstallman
 
 uninstallscript:
