@@ -44,7 +44,7 @@ DOCKER_IMAGE_NAME ?= $(PROJECT_NAME)
 DOCKER_CONTAINER_NAME ?= $(PROJECT_NAME)
 DOCKER_REPO_NAMESPACE ?= schulcloud
 DOCKER_REPO_NAME ?= $(DOCKER_REPO_NAMESPACE)/$(DOCKER_IMAGE_NAME)
-DOCKER_VERSION_TAG ?= ${BASE_IMAGE}-tsocks-${SHLIB_MAJOR}.${SHLIB_MINOR}.${SHLIB_PATCH}
+DOCKER_VERSION_TAG ?= $(BASE_IMAGE::=-)-tsocks-${SHLIB_MAJOR}.${SHLIB_MINOR}.${SHLIB_PATCH}
 
 
 SHOBJS = ${OBJS:.o=.so}
@@ -105,14 +105,14 @@ dockerbuild::
 	docker build $(DOCKER_BUILD_OPTIONS) "$(PROJECT_DIR)"
 
 .PHONY: dockertags
-dockertags:: DOCKER_TAG_OPTIONS +=
+dockertags:: DOCKER_TAG_OPTIONS += 
 dockertags::
-	docker tag $(DOCKER_IMAGE_NAME) $(DOCKER_REPO_NAME):$(DOCKER_VERSION_TAG)
+	docker tag  $(DOCKER_TAG_OPTIONS) $(DOCKER_IMAGE_NAME) $(DOCKER_REPO_NAME):$(DOCKER_VERSION_TAG)
 
 .PHONY: dockerpush
 dockerpush:: DOCKER_PUSH_OPTIONS ?=
 dockerpush:: dockertags
-	docker push $(DOCKER_REPO_NAME):$(DOCKER_VERSION_TAG)
+	docker push  $(DOCKER_PUSH_OPTIONS) $(DOCKER_REPO_NAME):$(DOCKER_VERSION_TAG)
 
 uninstall: uninstallscript uninstalllib uninstallman
 
