@@ -18,7 +18,7 @@ jobs:
       - name: Build image
         run: make dockerbuild 
         env: 
-          BASE_IMAGE: nodejs:12.19.0-alpine3.11
+          BASE_IMAGE: node:12.19.0-alpine3.11
       - name: Log into registry
         run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
