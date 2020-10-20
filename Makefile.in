@@ -24,7 +24,7 @@ SCRIPT = tsocks
 SHLIB_MAJOR = 1
 SHLIB_MINOR = 9
 SHLIB_PATCH = 0
-BASE_IMAGE = alpine
+BASE_IMAGE ?= alpine
 SHLIB = ${LIB_NAME}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}.${SHLIB_PATCH}
 
 INSTALL = @INSTALL@
@@ -35,6 +35,17 @@ LDFLAGS = @LDFLAGS@
 INCLUDES = -I.
 LIBS = @LIBS@
 SPECIALLIBS = @SPECIALLIBS@
+
+GIT_REMOTE_URL ?= $(shell git remote get-url origin)
+
+PROJECT_DIR ?= $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+PROJECT_NAME ?= $(basename $(notdir $(GIT_REMOTE_URL)))
+DOCKER_IMAGE_NAME ?= $(PROJECT_NAME)
+DOCKER_CONTAINER_NAME ?= $(PROJECT_NAME)
+DOCKER_REPO_NAMESPACE ?= schulcloud
+DOCKER_REPO_NAME ?= $(DOCKER_REPO_NAMESPACE)/$(DOCKER_IMAGE_NAME)
+DOCKER_VERSION_TAG ?= ${BASE_IMAGE}-tsocks-${SHLIB_MAJOR}.${SHLIB_MINOR}.${SHLIB_PATCH}
+
 
 SHOBJS = ${OBJS:.o=.so}
 
@@ -83,8 +94,25 @@ installman:
 	${MKINSTALLDIRS} "${DESTDIR}${mandir}/man5"
 	${INSTALL_DATA} tsocks.conf.5 ${DESTDIR}${mandir}/man5/
 	
-dockerimage:
-	docker build --build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg SHLIB=${SHLIB} .
+.PHONY: dockerbuild
+dockerbuild:: DOCKER_BUILD_OPTIONS += --pull --no-cache --force-rm --rm \
+	--build-arg BUILD_BRANCH=$(GIT_BRANCH) \
+	--build-arg BUILD_HASH=$(GIT_SHA) \
+	--build-arg BASE_IMAGE=${BASE_IMAGE} --build-arg SHLIB=${SHLIB} \
+	--file "$(PROJECT_DIR)/Dockerfile" \
+	--tag $(DOCKER_IMAGE_NAME)
+dockerbuild::
+	docker build $(DOCKER_BUILD_OPTIONS) "$(PROJECT_DIR)"
+
+.PHONY: dockertags
+dockertags:: DOCKER_TAG_OPTIONS +=
+dockertags::
+	docker tag $(DOCKER_IMAGE_NAME) $(DOCKER_REPO_NAME):$(DOCKER_VERSION_TAG)
+
+.PHONY: dockerpush
+dockerpush:: DOCKER_PUSH_OPTIONS ?=
+dockerpush:: dockertags
+	docker push $(DOCKER_REPO_NAME):$(DOCKER_VERSION_TAG)
 
 uninstall: uninstallscript uninstalllib uninstallman
 

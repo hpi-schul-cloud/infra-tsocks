@@ -295,7 +295,7 @@ int connect(CONNECT_SIGNATURE) {
    if (path->address == NULL) {
       if (path == &(config->defaultserver)) {
          if (config->fallback) {
-            show_msg(MSGERR, "Connection needs to be made "
+            show_msg(MSGNOTICE, "Connection needs to be made "
                              "via default server but "
                              "the default server has not "
                              "been specified. Fallback is 'yes' so "
@@ -329,7 +329,7 @@ int connect(CONNECT_SIGNATURE) {
 
       /* Complain if this server isn't on a localnet */
       if (is_local(config, &server_address.sin_addr)) {
-         show_msg(MSGERR, "SOCKS server %s (%s) is not on a local subnet!\n", 
+         show_msg(MSGWARN, "SOCKS server %s (%s) is not on a local subnet!\n", 
                   path->address, inet_ntoa(server_address.sin_addr));
       } else 
          gotvalidserver = 1;

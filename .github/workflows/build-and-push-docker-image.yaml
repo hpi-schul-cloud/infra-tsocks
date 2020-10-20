@@ -1,0 +1,30 @@
+---
+name: Build and push Docker image
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+jobs:
+  build_and_push:
+    runs-on: ubuntu-18.04
+    if: (contains(github.event.head_commit.message, '[skip ci]') == false) && (github.event_name == 'push')
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Makefile
+        run: ./configure
+        working-directory: infra-tsocks
+
+      - name: Build image
+        run: make dockerbuild 
+        working-directory: infra-tsocks
+        env: 
+          BASE_IMAGE: nodejs:12.19.0-alpine3.11
+      - name: Log into registry
+        run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push image
+        run: make dockerpush
+        working-directory: infra-tsocks
+
