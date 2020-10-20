@@ -3,8 +3,8 @@ name: Build and push Docker image
 
 on:
   push:
-    tags:
-      - '[0-9]*'
+    branches:
+      - 'master'
 jobs:
   build_and_push:
     runs-on: ubuntu-18.04
@@ -14,11 +14,9 @@ jobs:
 
       - name: Generate Makefile
         run: ./configure
-        working-directory: infra-tsocks
 
       - name: Build image
         run: make dockerbuild 
-        working-directory: infra-tsocks
         env: 
           BASE_IMAGE: nodejs:12.19.0-alpine3.11
       - name: Log into registry
@@ -26,5 +24,4 @@ jobs:
 
       - name: Push image
         run: make dockerpush
-        working-directory: infra-tsocks
 
