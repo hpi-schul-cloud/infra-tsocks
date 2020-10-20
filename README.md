@@ -461,7 +461,7 @@ The following directives are used in the tsocks configuration file:
   
 * _reaches_  
   This directive is only valid inside a path block. Its parameter is formed
-  as IP[:startport[-endport]]/Subnet  or *[:startport[-endport]]/Subnet and 
+  as IP[:startport[-endport]]/Subnet  or \*[:startport[-endport]]/Subnet and 
   it specifies a network (and a range
   of ports on that network) that can be accessed by the SOCKS server specified
   in this path block. For example, in a path block "reaches =

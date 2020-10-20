@@ -21,6 +21,7 @@ COMMON = common
 PARSER = parser
 VALIDATECONF = validateconf
 SCRIPT = tsocks
+CONFIG_SCRIPT = create-tsocks-config
 SHLIB_MAJOR = 1
 SHLIB_MINOR = 9
 SHLIB_PATCH = 0
@@ -37,7 +38,6 @@ LIBS = @LIBS@
 SPECIALLIBS = @SPECIALLIBS@
 
 GIT_REMOTE_URL ?= $(shell git remote get-url origin)
-colon := :
 PROJECT_DIR ?= $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME ?= $(basename $(notdir $(GIT_REMOTE_URL)))
 DOCKER_IMAGE_NAME ?= $(PROJECT_NAME)
@@ -45,7 +45,6 @@ DOCKER_CONTAINER_NAME ?= $(PROJECT_NAME)
 DOCKER_REPO_NAMESPACE ?= schulcloud
 DOCKER_REPO_NAME ?= $(DOCKER_REPO_NAMESPACE)/$(DOCKER_IMAGE_NAME)
 DOCKER_VERSION_TAG ?= $(subst $(colon),,$(BASE_IMAGE))-tsocks${SHLIB_MAJOR}.${SHLIB_MINOR}.${SHLIB_PATCH}
-
 
 SHOBJS = ${OBJS:.o=.so}
 
@@ -79,6 +78,7 @@ install: ${TARGETS} installscript installlib installman
 installscript:
 	${MKINSTALLDIRS} "${DESTDIR}${bindir}"
 	${INSTALL} ${SCRIPT} ${DESTDIR}${bindir}
+	${INSTALL} ${CONFIG_SCRIPT} ${DESTDIR}${bindir}
 
 installlib:
 	${MKINSTALLDIRS} "${DESTDIR}${libdir}"
@@ -118,6 +118,7 @@ uninstall: uninstallscript uninstalllib uninstallman
 
 uninstallscript:
 	-rm -f ${DESTDIR}${bindir}/${SCRIPT}
+	-rm -f ${DESTDIR}${bindir}/${CONFIG_SCRIPT}
 
 uninstalllib:
 	-rm -f ${DESTDIR}${libdir}/${SHLIB}

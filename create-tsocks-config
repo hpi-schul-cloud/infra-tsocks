@@ -1,0 +1,47 @@
+#!/bin/sh
+# create-tsocks-config - script to create a configuration file for tsocks library based on environment 
+# variables. 
+# TSOCKS_ENABLED
+# TSOCKS_CONF_FILE
+# TSOCKS_CONF_LOCAL
+# TSOCKS_CONF_REACHES
+# TSOCKS_CONF_SERVER
+# TSOCKS_CONF_SERVER_TYPE
+# TSOCKS_CONF_SERVER_PORT
+# TSOCKS_CONF_FALLBACK
+
+if [ "${TSOCKS_ENABLED}" = "true" ]; then
+  [ -z "${TSOCKS_CONF_FILE}" ] && export TSOCKS_CONF_FILE=/etc/tsocks.conf
+
+  echo "" > ${TSOCKS_CONF_FILE}
+  if [ -n "${TSOCKS_CONF_LOCAL}" ]; then
+    locals=$(echo $TSOCKS_CONF_LOCAL | tr ";" "\n")
+    for local in $locals
+    do
+      echo "local = $local" >> ${TSOCKS_CONF_FILE}
+    done
+  fi
+  if [ -n "${TSOCKS_CONF_REACHES}" ]; then
+    reaches=$(echo "$TSOCKS_CONF_REACHES" | tr ";" "\n")
+    echo "path {" >> ${TSOCKS_CONF_FILE}
+    for reach in $reaches
+    do
+      echo "reaches = $reach" >> ${TSOCKS_CONF_FILE}
+    done
+  fi
+  if [ -n "${TSOCKS_CONF_SERVER}" ]; then
+    echo "server = ${TSOCKS_CONF_SERVER}" >> ${TSOCKS_CONF_FILE}
+  fi
+  if [ -n "${TSOCKS_CONF_SERVER_TYPE}" ]; then
+    echo "server_type = ${TSOCKS_CONF_SERVER_TYPE}" >> ${TSOCKS_CONF_FILE}
+  fi
+  if [ -n "${TSOCKS_CONF_SERVER_PORT}" ]; then
+    echo "server_port = ${TSOCKS_CONF_SERVER_PORT}" >> ${TSOCKS_CONF_FILE}
+  fi
+  if [ -n "${TSOCKS_CONF_REACHES}" ]; then
+    echo "}" >> ${TSOCKS_CONF_FILE}  # Close "path {"
+  fi
+  if [ -n "${TSOCKS_CONF_FALLBACK}" ]; then
+    echo "fallback = ${TSOCKS_CONF_FALLBACK}" >> ${TSOCKS_CONF_FILE}
+  fi
+fi

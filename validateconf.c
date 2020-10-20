@@ -146,8 +146,7 @@ void show_conf(struct parsedfile *config) {
 	if ((config->defaultserver).address != NULL) {
 		show_server(config, &(config->defaultserver), 1);
 	} else {
-		printf("No default server specified, this is rarely a "
-		       "good idea\n");
+		printf("No default server specified\n");
 	}
 	printf("\n");
 
@@ -232,14 +231,17 @@ void show_server(struct parsedfile *config, struct serverent *server, int def) {
 		printf("This server can be used to reach:\n");
 		net = server->reachnets;
 		while (net != NULL) {
-		 if(!net->wildcard){
-			printf("Network: %15s ",
+		 if(net->wildcard){
+			printf("  Network:               * ");
+			printf("NetMask:                 ");
+		 }else{
+			printf("  Network: %15s ",
 			       inet_ntoa(net->localip));
 			printf("NetMask: %15s ", 
 			       inet_ntoa(net->localnet));
 		 }
          if (net->startport)
-            printf("Port(s): %5lu", net->startport);
+            printf("  Port(s): %5lu", net->startport);
          if (net->endport > net->startport)
             printf("- %5lu", net->endport);
          printf("\n");
